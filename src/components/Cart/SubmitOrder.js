@@ -20,8 +20,10 @@ const SubmitOrder = (props) => {
                 <label htmlFor="address">Address</label>
                 <input type="text" id="address"/>
             </div>
-            <button>Confirm Order</button>
-            <button type='button' onClick={props.onCancel}>Cancel</button>
+            <div className={styles.actions}>
+                <button className={styles.submit}>Confirm Order</button>
+                <button type='button' onClick={props.onCancel}>Cancel</button>
+            </div>
         </form>
     );
 };
