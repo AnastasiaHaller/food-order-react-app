@@ -36,11 +36,16 @@ const MealList = () => {
 
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [httpErrorMessage, setHttpErrorMessage] = useState();
 
   useEffect(() => {
     const fetchMeals = async () => {
       setIsLoading(true);
       const response = await fetch("https://joke-fcdf0-default-rtdb.europe-west1.firebasedatabase.app/meals.json");
+
+      if (!response.ok) {
+        throw new Error("Something went wrong...");
+      }
       const responseData = await response.json();
 
       const loadedMeals = [];
@@ -58,13 +63,24 @@ const MealList = () => {
       setIsLoading(false);
     };
 
-    fetchMeals();
+    fetchMeals().catch((err) => {
+      setIsLoading(false);
+      setHttpErrorMessage(err.message);
+    });
   }, []);
 
   if (isLoading) {
     return (
       <section className={styles.loading}>
         <p>Loading...</p>
+      </section>
+    );
+  }
+
+  if (httpErrorMessage) {
+    return (
+      <section className={styles.error}>
+        <p>{httpErrorMessage}</p>
       </section>
     );
   }
