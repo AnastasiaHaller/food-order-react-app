@@ -55,7 +55,7 @@
   color: white;
 }
 
-.invalid label, p {
+.invalid label, .invalid p {
   color: red;
 }
 
