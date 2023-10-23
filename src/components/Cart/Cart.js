@@ -8,6 +8,8 @@ import SubmitOrder from './SubmitOrder';
 const Cart = (props) => {
 
     const [isSubmitOrderAvailable, setIsSubmitOrderAvailable] = useState(false);
+    const [isDataSubmitting, setIsDataSubmitting] = useState(false);
+    const [wasDataSendingSuccessful, setWasDataSendingSuccessful] = useState(false);
 
     const cartContext = useContext(CartContext);
 
@@ -27,15 +29,21 @@ const Cart = (props) => {
         setIsSubmitOrderAvailable(true);
     };
 
-    const submitOrderHandler = (userData) => {
+    const submitOrderHandler = async (userData) => {
 
-        fetch("https://joke-fcdf0-default-rtdb.europe-west1.firebasedatabase.app/orders.json", {
+        setIsDataSubmitting(true);
+
+        await fetch("https://joke-fcdf0-default-rtdb.europe-west1.firebasedatabase.app/orders.json", {
             method: "POST",
             body: JSON.stringify({
                 user: userData,
                 orderedMeals: cartContext.items,
             }),
         });
+
+        setIsDataSubmitting(false);
+        setWasDataSendingSuccessful(true);
+        cartContext.clearCart();
 
     };
 
@@ -61,8 +69,8 @@ const Cart = (props) => {
         </div>
     );
 
-    return (
-        <Modal onHideCart={props.onHideCart}>
+    const cartModalContent = (
+        <>
             {cartItems}
             <div className={styles.total}>
                 <span>Total</span>
@@ -70,6 +78,25 @@ const Cart = (props) => {
             </div>
             {isSubmitOrderAvailable && <SubmitOrder onSubmit={submitOrderHandler} onCancel={props.onHideCart} />}
             {!isSubmitOrderAvailable && modalButtons}
+        </>
+    );
+
+    const dataSubmittingCartModalContent = <p>Sending Order Details...</p>
+
+    const dataWasSubmittedCartModalContent = (
+        <>
+            <p>Your Order Has Been Sent</p>
+            <div className={styles.actions}>
+                <button className={styles['button--alt']} onClick={props.onHideCart} >Close</button>
+            </div>
+        </>
+    );
+
+    return (
+        <Modal onHideCart={props.onHideCart}>
+            {!isDataSubmitting && !wasDataSendingSuccessful && cartModalContent}
+            {isDataSubmitting && dataSubmittingCartModalContent}
+            {wasDataSendingSuccessful && dataWasSubmittedCartModalContent}
         </Modal>
     );
 };
