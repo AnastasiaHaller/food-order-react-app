@@ -1,4 +1,4 @@
-<b>Food Order React App:</b> A learning project created while following the 'From Zero to Professional' course on Udemy.
+<b>Food Order React App:</b> A learning project created while following the 'Modern React - From Zero to Professional' course on Udemy.
 
 <b>Technologies Used:</b>
 
